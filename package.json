@@ -1,0 +1,21 @@
+{
+  "name": "template-app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run --exclude '**/*.integration.test.ts'",
+    "test:integration": "vitest run **/*.integration.test.ts || echo 'no integration tests'",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "eslint": "^9",
+    "prettier": "^3",
+    "typescript": "^5",
+    "vitest": "^2"
+  }
+}

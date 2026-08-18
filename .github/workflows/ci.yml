@@ -1,0 +1,13 @@
+# .github/workflows/ci.yml  (replace OWNER at bootstrap time; template ships a placeholder)
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  ci:
+    uses: __OWNER__/.github/.github/workflows/ci.yml@v1
+    with:
+      language: node
+      node-version: "20"
+      run-integration: true
