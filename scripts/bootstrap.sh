@@ -38,7 +38,15 @@ else
   echo "WARNING: branch-protection ruleset NOT applied. Rulesets need GitHub Pro (private repos) or a public repo. Continuing without enforced protection."
 fi
 
-# 4. Commit the owner substitution
+# 4. Link the repo to the shared project board (best-effort; needs the 'project' scope).
+PNUM=$(gh api "repos/$OWNER/.github/contents/PROJECT.md" -q .content 2>/dev/null | base64 -d 2>/dev/null | grep -i 'Project number' | grep -o '[0-9]\+' || true)
+if [ -n "${PNUM:-}" ] && gh project link "$PNUM" --owner "$OWNER" --repo "$OWNER/$REPO" >/dev/null 2>&1; then
+  echo "Linked to project board #$PNUM."
+else
+  echo "WARNING: could not link project board (need the 'project' scope, or PROJECT.md missing). Link later: gh project link <num> --owner $OWNER --repo $OWNER/$REPO"
+fi
+
+# 5. Commit the owner substitution
 git add .github/workflows
 git commit -m "chore: bootstrap project ($OWNER)" || echo "nothing to commit"
 echo "Done. Push and open your first PR."
