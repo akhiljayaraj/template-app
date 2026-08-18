@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/node": "^20",
     "@vitest/coverage-v8": "^2",
-    "eslint": "^9",
+    "eslint": "^10",
     "prettier": "^3",
     "typescript": "^5",
     "typescript-eslint": "^8",
