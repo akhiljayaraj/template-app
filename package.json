@@ -12,7 +12,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@vitest/coverage-v8": "^2",
     "eslint": "^9",
     "prettier": "^3",
