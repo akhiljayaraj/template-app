@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Always operate from the repo root so relative paths below resolve.
+cd "$(git rev-parse --show-toplevel)"
 OWNER=$(gh api user -q .login)
-REPO=$(basename "$(git rev-parse --show-toplevel)")
+REPO=$(basename "$(pwd)")
 echo "Bootstrapping $OWNER/$REPO"
 
-# 1. Substitute the __OWNER__ placeholder in caller workflows
-grep -rl '__OWNER__' .github/workflows | while read -r f; do
-  sed -i.bak "s/__OWNER__/$OWNER/g" "$f" && rm -f "$f.bak"
-done
+# 1. Substitute the __OWNER__ placeholder in caller workflows.
+# Idempotent: guard with grep -q so a re-run (placeholder already substituted)
+# does not abort the whole script under `set -euo pipefail` (grep exits 1 on no match).
+if grep -rlq '__OWNER__' .github/workflows 2>/dev/null; then
+  grep -rl '__OWNER__' .github/workflows | while read -r f; do
+    sed -i.bak "s/__OWNER__/$OWNER/g" "$f" && rm -f "$f.bak"
+  done
+fi
 
 # 2. Sync labels from the platform repo
 tmp=$(mktemp)
