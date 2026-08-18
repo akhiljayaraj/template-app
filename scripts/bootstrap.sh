@@ -29,10 +29,14 @@ for l in labels:
 PY
 rm -f "$tmp"
 
-# 3. Apply the branch-protection ruleset
-gh api -X POST "repos/$OWNER/$REPO/rulesets" \
-  --input .platform/ruleset.json >/dev/null
-echo "Ruleset applied."
+# 3. Apply the branch-protection ruleset (best-effort).
+# Rulesets are unavailable on free-plan PRIVATE repos (HTTP 403 "upgrade required").
+# Do not let that abort bootstrap under `set -euo pipefail` — warn and continue.
+if gh api -X POST "repos/$OWNER/$REPO/rulesets" --input .platform/ruleset.json >/dev/null 2>&1; then
+  echo "Ruleset applied — main is protected."
+else
+  echo "WARNING: branch-protection ruleset NOT applied. Rulesets need GitHub Pro (private repos) or a public repo. Continuing without enforced protection."
+fi
 
 # 4. Commit the owner substitution
 git add .github/workflows
